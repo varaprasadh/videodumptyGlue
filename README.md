@@ -1,1 +1,1 @@
-breaking video to frames
+glue frames to video
