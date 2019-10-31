@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
+import App from "./App";
+import { ToastContainer, toast } from 'react-toastify';
 
 export class Root extends Component {
     render() {
         return (
             <div>
-                test
+                <App/>
+                <ToastContainer />
             </div>
         )
     }
