@@ -1,8 +1,12 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "ElectronReact",
-  "version": "0.17.1",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "video-dumpty-glue",
+  "productName": "VideodumptyGlue",
+  "version": "0.0.1",
+  "description": "takes modified frame inputs and glue them up and gives you back as video",
+  "author": {
+    "name":"varaprasadh",
+    "email": "varaprasadh.a@gmail.com"
+  },
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
@@ -28,6 +32,7 @@
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r @babel/register ./app/main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config configs/webpack.config.renderer.dev.babel.js"
   },
+
   "lint-staged": {
     "*.{js,jsx}": [
       "cross-env NODE_ENV=development eslint --cache --format=pretty",
@@ -50,8 +55,8 @@
   },
   "main": "./app/main.prod.js",
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.develar.ElectronReact",
+    "productName": "VideodumptyGlue",
+    "appId": "org.develar.VideodumptyGlue",
     "files": [
       "app/dist/",
       "app/app.html",
@@ -198,7 +203,7 @@
     "devtron": "^1.4.0",
     "electron-debug": "^2.0.0",
     "electron-log": "^2.2.17",
-    "electron-updater": "^3.2.3",
+    "electron-updater": "^4.0.0",
     "ffmpeg": "0.0.4",
     "ffmpeg-progress-wrapper": "^1.1.5",
     "fluent-ffmpeg": "^2.1.2",
