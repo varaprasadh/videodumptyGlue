@@ -3,6 +3,8 @@ const {
     FFMpegProgress
 } = require('ffmpeg-progress-wrapper');
 const fs=require('fs');
+const FFMPEG_PATH = require('ffmpeg-static').path.replace('app.asar', 'app.asar.unpacked')
+const FFPROBE_PATH = require('ffprobe-static').path.replace('app.asar', 'app.asar.unpacked')
 
 function glueVideo({
     inputFrameFolder, inputVideo, outputFolder, selected_audio_stream, selected_video_type, op_width, op_height, op_video_name, ip_fps
@@ -42,7 +44,9 @@ function glueVideo({
     )
     console.log("command applied", command_args.join(' '));
 
-    const process = new FFMpegProgress(command_args);
+    const process = new FFMpegProgress(command_args,{
+        cmd:FFMPEG_PATH
+    });
     return process;
 }
 

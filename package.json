@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "description": "takes modified frame inputs and glue them up and gives you back as video",
   "author": {
-    "name":"varaprasadh",
+    "name": "varaprasadh",
     "email": "varaprasadh.a@gmail.com"
   },
   "scripts": {
@@ -32,7 +32,6 @@
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r @babel/register ./app/main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config configs/webpack.config.renderer.dev.babel.js"
   },
-
   "lint-staged": {
     "*.{js,jsx}": [
       "cross-env NODE_ENV=development eslint --cache --format=pretty",
@@ -196,7 +195,13 @@
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10",
     "webpack-merge": "^4.1.4",
-    "yarn": "^1.12.3"
+    "yarn": "^1.12.3",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-hot-loader": "^4.3.12",
+    "react-progressbar": "^15.4.1",
+    "react-select": "^3.0.8",
+    "react-toastify": "^5.4.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.5.0",
@@ -207,19 +212,9 @@
     "ffmpeg": "0.0.4",
     "ffmpeg-progress-wrapper": "^1.1.5",
     "fluent-ffmpeg": "^2.1.2",
-    "history": "^4.7.2",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "react-hot-loader": "^4.3.12",
-    "react-progressbar": "^15.4.1",
-    "react-redux": "^5.1.1",
-    "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1",
-    "react-select": "^3.0.8",
-    "react-toastify": "^5.4.0",
-    "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0",
-    "source-map-support": "^0.5.9"
+    "source-map-support": "^0.5.9",
+    "ffmpeg-static": "^2.7.0",
+    "ffprobe-static": "^3.0.0"
   },
   "devEngines": {
     "node": ">=7.x",
