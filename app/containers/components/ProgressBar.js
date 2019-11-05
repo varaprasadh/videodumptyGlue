@@ -12,7 +12,10 @@ export class ProgressBar extends Component {
                        <Progress completed={this.props.percent}/>
                   </div>
                   <div className={styles.label}>processing...</div>
-                </div>
+                  <div 
+                  onClick={()=>this.props.onCancel()}
+                  className={styles.cancel}>CANCEL</div>
+                  </div>
             </div>
         )
     }

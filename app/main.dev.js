@@ -128,6 +128,18 @@ app.on('ready', async () => {
        event.sender.send("process-progress-done");
      });
      process.run();
+      ipcMain.on('kill-process', (event) => {
+        if (process) {
+          try {
+            process.kill();
+          } catch (err) {
+            //handle error : not needed
+          }
+        }
+      });
+      process.on('error',()=>{
+        // event.sender.send('')
+      })
   });
   
 });

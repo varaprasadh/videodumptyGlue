@@ -30,3 +30,14 @@
     color: #7f8c8d;
     margin-top: 10px;
 }
+.cancel{
+    text-align: center;
+    font-family: sans-serif;
+    padding: 2px 20px;
+    margin-top: 5px;
+    color: tomato;
+    cursor: pointer;
+}
+.cancel:hover{
+    color: rgb(197, 10, 10);
+}

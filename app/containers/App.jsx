@@ -211,6 +211,13 @@ export class App extends Component {
          op_video_name:target.value
      })
    }
+    cancelOperation() {
+        ipcRenderer.send('kill-process');
+        this.setState({
+            percent: 0,
+            processing: false
+        });
+    }
     render() {
         const op_vid_options = [{
                 value: "mp4",
@@ -251,7 +258,7 @@ export class App extends Component {
                  </div>
                  <audio hidden src={ding_sound} ref={ding=>this._ding=ding}/>
                 {
-                    this.state.processing==true && <ProgressBar percent={this.state.percent}/>
+                    this.state.processing==true && <ProgressBar onCancel={this.cancelOperation.bind(this)} percent={this.state.percent}/>
                 }
                   <div className={styles.row}>
                   <div className={`${styles.column} `}>
