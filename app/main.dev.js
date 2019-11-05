@@ -70,9 +70,9 @@ app.on('ready', async () => {
     show: false,
     width: 1300,
     height: 700,
-    // webPreferences:{
-    //   devTools:false
-    // }
+    webPreferences:{
+      devTools:false
+    }
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
