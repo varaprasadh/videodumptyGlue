@@ -1,8 +1,7 @@
 
 const FFmpeg = require('fluent-ffmpeg');
 const FFMPEG_PATH = require('ffmpeg-static').path.replace('app.asar', 'app.asar.unpacked')
-const FFPROBE_PATH = require('ffprobe-static').path.replace('app.asar', 'app.asar.unpacked')
-
+const FFPROBE_PATH = require('ffprobe-static').path.replace('app.asar', 'app.asar.unpacked');
 //get dimensions of image or video
 function getDimensions(path){
     console.log("new parh",path);

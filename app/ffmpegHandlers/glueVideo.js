@@ -1,26 +1,9 @@
 const fluentFFmpeg=require('fluent-ffmpeg');
 const path=require('path')
 const fs=require('fs');
-const FFMPEG_PATH = require('ffmpeg-static').path.replace('app.asar', 'app.asar.unpacked');
-const FFPROBE_PATH = require('ffprobe-static').path.replace('app.asar', 'app.asar.unpacked');
+const FFMPEG_PATH = require('ffmpeg-static').path.replace('app.asar', 'app.asar.unpacked')
+const FFPROBE_PATH = require('ffprobe-static').path.replace('app.asar', 'app.asar.unpacked')
 
-// const data={
-//     inputFrameFolder: 'C:\\Users\\vara\\Desktop\\videogjgvhjyvjgyb',
-//     inputVideo: 'C:\\Users\\vara\\Desktop\\video.mp4',
-//     ip_fps: '30',
-//     op_height: '1080',
-//     op_video_name: 'bean-glued',
-//     op_width: '1920',
-//     outputFolder: 'C:\\Users\\vara\\Desktop',
-//     selected_audio_stream: {
-//         label: 'Audio Stream 1',
-//         value: 1
-//     },
-//     selected_video_type: {
-//         label: '.mp4',
-//         value: 'mp4'
-//     }
-// }
 function glueVideo({
     inputFrameFolder, inputVideo, outputFolder, selected_audio_stream, selected_video_type, op_width, op_height, op_video_name, ip_fps
 }) {  
@@ -58,6 +41,7 @@ function glueVideo({
     process.setFfmpegPath(FFMPEG_PATH);
     process.setFfprobePath(FFPROBE_PATH);
 
+<<<<<<< HEAD
     process.input(path.join(`${inputFrameFolder}`,`%8d.${frameExtension}`));
     process.addInputOptions([
         "-f image2"
@@ -73,6 +57,11 @@ function glueVideo({
     process.addOptions(command_args);
     process.output(_temp_file);
      
+=======
+    const process = new FFMpegProgress(command_args,{
+        cmd:FFMPEG_PATH
+    });
+>>>>>>> fbaffaa85f30aa5620951813c96c5f23630c0bce
     return process;
 
 }

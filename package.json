@@ -212,9 +212,9 @@
     "ffmpeg": "0.0.4",
     "ffmpeg-progress-wrapper": "^1.1.5",
     "fluent-ffmpeg": "^2.1.2",
+    "source-map-support": "^0.5.9",
     "ffmpeg-static": "^2.7.0",
-    "ffprobe-static": "^3.0.0",
-    "source-map-support": "^0.5.9"
+    "ffprobe-static": "^3.0.0"
   },
   "devEngines": {
     "node": ">=7.x",
