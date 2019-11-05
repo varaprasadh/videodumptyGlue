@@ -41,7 +41,6 @@ function glueVideo({
     process.setFfmpegPath(FFMPEG_PATH);
     process.setFfprobePath(FFPROBE_PATH);
 
-<<<<<<< HEAD
     process.input(path.join(`${inputFrameFolder}`,`%8d.${frameExtension}`));
     process.addInputOptions([
         "-f image2"
@@ -57,11 +56,6 @@ function glueVideo({
     process.addOptions(command_args);
     process.output(_temp_file);
      
-=======
-    const process = new FFMpegProgress(command_args,{
-        cmd:FFMPEG_PATH
-    });
->>>>>>> fbaffaa85f30aa5620951813c96c5f23630c0bce
     return process;
 
 }
