@@ -1,9 +1,26 @@
-
-const {
-    FFMpegProgress
-} = require('ffmpeg-progress-wrapper');
+const fluentFFmpeg=require('fluent-ffmpeg');
+const path=require('path')
 const fs=require('fs');
+const FFMPEG_PATH = require('ffmpeg-static').path.replace('app.asar', 'app.asar.unpacked');
+const FFPROBE_PATH = require('ffprobe-static').path.replace('app.asar', 'app.asar.unpacked');
 
+// const data={
+//     inputFrameFolder: 'C:\\Users\\vara\\Desktop\\videogjgvhjyvjgyb',
+//     inputVideo: 'C:\\Users\\vara\\Desktop\\video.mp4',
+//     ip_fps: '30',
+//     op_height: '1080',
+//     op_video_name: 'bean-glued',
+//     op_width: '1920',
+//     outputFolder: 'C:\\Users\\vara\\Desktop',
+//     selected_audio_stream: {
+//         label: 'Audio Stream 1',
+//         value: 1
+//     },
+//     selected_video_type: {
+//         label: '.mp4',
+//         value: 'mp4'
+//     }
+// }
 function glueVideo({
     inputFrameFolder, inputVideo, outputFolder, selected_audio_stream, selected_video_type, op_width, op_height, op_video_name, ip_fps
 }) {  
@@ -15,35 +32,49 @@ function glueVideo({
       frameExtension=_frame.split(".").pop();
      }
     //map frames to video and add required options
-    let _temp_file=`${outputFolder}/${op_video_name}.${op_ext}`;
-    let command_args = [
-        "-f", "image2",
-        "-i", `${inputFrameFolder}/%8d.${frameExtension}`,
-        "-r", `${ip_fps}`
-    ];
+    let _temp_file=path.join(`${outputFolder}`,`${op_video_name}.${op_ext}`);
+    console.log("temp file name",_temp_file);
+    let command_args = [`-r ${ip_fps}`];
     //set audio stream
-    let streamIndex = selected_audio_stream.value
+    let streamIndex = selected_audio_stream.value;
+    let aux_inputs=[];
     if (inputVideo != null && streamIndex != 0) {
         console.log("adding audio");
-         command_args.push("-i", `${inputVideo}`); //append video stream from frames
-          command_args.push('-c', "copy")
-         command_args.push("-map", `1:a:${streamIndex-1}`) //add selected audio stream
-    }else{
-        command_args.push('-c',"copy")
+          aux_inputs.push(`${inputVideo}`); //append video stream from frames
+        
     }
+  
     command_args.push(
-         "-map","0:v:0",
-         "-pix_fmt", "yuv420p",
-         "-vcodec", "libx264",
-         "-crf", "17",
-         '-vf', `scale='${op_width}':'${op_height}'`,
+         "-map 0:v:0",
+         "-pix_fmt yuv420p",
+         "-vcodec libx264",
+         "-crf 17",
+         `-vf scale='${op_width}':'${op_height}'`,
          "-shortest",
-         "-y", `${_temp_file}`
-    )
+    );
     console.log("command applied", command_args.join(' '));
+    const process=fluentFFmpeg();
+    
+    process.setFfmpegPath(FFMPEG_PATH);
+    process.setFfprobePath(FFPROBE_PATH);
 
-    const process = new FFMpegProgress(command_args);
+    process.input(path.join(`${inputFrameFolder}`,`%8d.${frameExtension}`));
+    process.addInputOptions([
+        "-f image2"
+    ])
+    if(aux_inputs.length){
+        process.addInput(aux_inputs[0]);
+         
+        process.addOption("-c copy");
+        process.addOption(`-map 1:a:${streamIndex-1}`); //add selected audio stream
+    }else{
+        process.addOption("-c copy");
+    }
+    process.addOptions(command_args);
+    process.output(_temp_file);
+     
     return process;
+
 }
 
 module.exports = glueVideo;

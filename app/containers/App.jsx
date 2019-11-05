@@ -64,7 +64,7 @@ export class App extends Component {
         ipcRenderer.on('process-progress', (event, args) => {
             //change progress state
             console.log("progress", args);
-            let progress = Math.ceil(args.progress * 100);
+            let progress = Math.ceil(args.percent);
             this.setState({
                 percent: progress
             })
@@ -78,7 +78,7 @@ export class App extends Component {
             }
             this.setState({
                 processing: false,
-                percent: 0
+                percent: 100
             });
             toast.success("process completed");
         })
@@ -178,7 +178,7 @@ export class App extends Component {
       ipcRenderer.send('get-metadata',file.path);
   }
    handleInputFrameFolder(file){
-        let outputfilename = file.path.split('/').pop() + "-glued";
+        let outputfilename = file.name+ "-glued";
         this.setState({
             inputFrameFolder:file,
             op_video_name: outputfilename
