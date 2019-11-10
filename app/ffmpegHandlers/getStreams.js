@@ -17,7 +17,10 @@ function getStreams(path) {
             command.ffprobe(0, (err, meta) => {
                 if (err) reject(err);
                 let audiostreams=meta.streams.filter(({codec_type})=>codec_type==="audio")
-                let fps=meta.streams[0].r_frame_rate.split('/')[0];
+                let videos_stream=meta.streams.find(({codec_type})=>codec_type=='video');
+
+                let fps = videos_stream.r_frame_rate;
+                console.log(videos_stream);
                 resolve({audiostreams,fps});
             })
         }

@@ -8,4 +8,11 @@
   - after node modules installed run 
   ```npm run dev```
 
-# build files need to be genarated!.
+# build instructions
+  - once require node modules are installed then go to next step
+  - on windows run
+  ```npm run package-win```
+   it will handle all the background tasks and create release directory inside project 
+ - on linux run 
+ ``` npm run package-linux```
+

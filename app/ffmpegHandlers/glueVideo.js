@@ -18,6 +18,7 @@ function glueVideo({
     let _temp_file=path.join(`${outputFolder}`,`${op_video_name}.${op_ext}`);
     console.log("temp file name",_temp_file);
     let command_args = [`-r ${ip_fps}`];
+    // let command_args = [];
     //set audio stream
     let streamIndex = selected_audio_stream.value;
     let aux_inputs=[];
@@ -53,6 +54,7 @@ function glueVideo({
     }else{
         process.addOption("-c copy");
     }
+    // process.withOutputFPS(ip_fps)
     process.addOptions(command_args);
     process.output(_temp_file);
      

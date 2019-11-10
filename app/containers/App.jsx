@@ -9,6 +9,7 @@ import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { ipcRenderer } from 'electron';
 import ProgressBar from './components/ProgressBar';
+import fs from "fs";
 
 
 
@@ -40,7 +41,8 @@ export class App extends Component {
     }
    componentDidMount(){
        ipcRenderer.on('got-metadata',(event,data)=>{
-           console.log(data.fps);
+           
+
            let _parsedAudioStreams = data.audiostreams.map((stream, i) => ({
                label: `Audio Stream ${i+1}`,
                value: i + 1
@@ -49,6 +51,18 @@ export class App extends Component {
                label: "no audio",
                value: 0
            });
+           console.log(data.fps);
+           let _fps=Number(data.fps);
+           //hard coded, just to save time
+        //    if(_fps>60 && data.fps.length>3){
+        //        _fps=_fps/100;
+        //    }
+        //    else if(_fps>60 && data.fps.length>4){
+        //        _fps=_fps/1000;
+        //    }
+        //    else if(_fps>60 && data.fps.length>5){
+        //        _fps=_fps/10000;
+        //    }
           this.setState({
               _audio_streams:_parsedAudioStreams,
               ip_fps:data.fps,
@@ -79,12 +93,21 @@ export class App extends Component {
             this.setState({
                 processing: false,
                 percent: 100
+            },()=>{
+                setTimeout(()=>{
+                    this.setState({
+                        percent:0
+                    })
+                },200);
             });
             toast.success("process completed");
         })
    }
 
-
+ normalize(min, max,val) {
+    var delta = max - min;
+    return (val - min) / delta;
+}
   
    breakApart(){
       let {
@@ -103,12 +126,12 @@ export class App extends Component {
          if(valid){
              let obj={
                 inputVideo:inputVideo && inputVideo.path||null,
-                outputFolder:outputFolder.path,
+                outputFolder:outputFolder,
                 inputFrameFolder:inputFrameFolder.path,
                 op_width,
                 op_height,
                 op_video_name,
-                ip_fps,
+                ip_fps:eval(ip_fps),
                 selected_audio_stream,
                 selected_video_type,
              }
@@ -173,27 +196,41 @@ export class App extends Component {
    }
   handleInputVideoFile(file){
       this.setState({
-          inputVideo:file
+          inputVideo:file,
+          outputFolder: file.path.split("/").slice(0,-1).join("/")
       });
       ipcRenderer.send('get-metadata',file.path);
   }
    handleInputFrameFolder(file){
-        let outputfilename = file.name+ "-glued";
-        this.setState({
-            inputFrameFolder:file,
-            op_video_name: outputfilename
-        });
-     ipcRenderer.send('get-frame-resolution',file.path);
+        let frames=fs.readdirSync(file.path);
+        console.log(frames);
+        let isValidFolder=frames.find(frame=>/^\d{8}./.test(frame))
+        console.log("isvaliud",isValidFolder);
+        if(isValidFolder){
+             let outputfilename = file.name + "-glued";
+             this.setState({
+                 inputFrameFolder: file,
+                 op_video_name: outputfilename,
+
+             });
+             ipcRenderer.send('get-frame-resolution', file.path);
+        }else{
+            toast.error("no frames found on this folder");
+        }
    }
    handleOutputFolder(file){
        this.setState({
-           outputFolder:file
+           outputFolder:file.path
        })
    }
    setFps({target}){
-      this.setState({
-          ip_fps:target.value
-      });
+      let value=target.value;
+      if(Number(value)!=NaN || value=='/'){
+         this.setState({
+             ip_fps: target.value
+         });
+      }
+      return 
    }
    handleAudioStreamChange(option){
        this.setState({
@@ -247,15 +284,12 @@ export class App extends Component {
              ip_fps,
              selected_audio_stream
          } = this.state;
-
-         let buttonEnabled = (inputFrameFolder != null && op_width.trim() != "" && op_height.trim() != "" && outputFolder != null && op_video_name.trim() != "" && !Number(ip_fps)<=0);
+         let isValidFps = ip_fps.split('/')[0] / (ip_fps.split('/')[1]||1);
+         let buttonEnabled = (inputFrameFolder != null && op_width.trim() != "" && op_height.trim() != "" && outputFolder != null && op_video_name.trim() != "" && isValidFps);
 
         return (
             !this.state.reset &&
             <div className={styles.app}>
-                 <div className={styles.title}>
-                     VideoDumptyGlue
-                 </div>
                  <audio hidden src={ding_sound} ref={ding=>this._ding=ding}/>
                 {
                     this.state.processing==true && <ProgressBar onCancel={this.cancelOperation.bind(this)} percent={this.state.percent}/>
@@ -290,6 +324,7 @@ export class App extends Component {
                         onDropFile={this.handleOutputFolder.bind(this)}
                         type="folder"
                         defaultLabelText="No Output Folder Set"
+                         destination_folder_name={this.state.outputFolder}
                        />
                     </div>
                  </div>
@@ -297,7 +332,8 @@ export class App extends Component {
                      <div className={`${styles.column} ${styles._alignstart}`}>
                           <div className={`${styles.__row} ${styles.strech} ${styles.space_between}`}>
                             <div className={styles.label}>FPS : </div>
-                             <input type="number" 
+                             <input 
+                                type="text" 
                                 placeholder="..."
                                 value={this.state.ip_fps}
                                 onChange={this.setFps.bind(this)}
@@ -370,7 +406,7 @@ export class App extends Component {
                          className={`${styles.btn} ${styles.break} ${buttonEnabled?"":styles.disabled}`}
                          onClick={this.breakApart.bind(this)}
                          >
-                          BREAK APART
+                         GLUE TOGETHER
                       </div>
                  </div>  
             </div>
@@ -483,7 +519,9 @@ class DropZone extends Component{
                 </div>)
                 }
                 <div className={styles.videoTitle}>
-                    {this.state.defaultLabelText}
+                    {
+                        this.props.destination_folder_name != null ? this.props.destination_folder_name.split('/').pop() + "/" : this.state.defaultLabelText
+                    }
                 </div>
             </div>
         </div>

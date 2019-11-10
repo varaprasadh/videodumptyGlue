@@ -2,6 +2,16 @@ html,body{
     margin: 0;
     padding: 0;
 }
+div {
+    -webkit-user-select: none;
+    /* Safari 3.1+ */
+    -moz-user-select: none;
+    /* Firefox 2+ */
+    -ms-user-select: none;
+    /* IE 10+ */
+    user-select: none;
+    /* Standard syntax */
+}
 
 .Toastify__toast-container {
     z-index: 9999;

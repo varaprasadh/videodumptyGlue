@@ -47,9 +47,6 @@ const installExtensions = async () => {
   ).catch(console.log);
 };
 
-/**
- * Add event listeners...
- */
 
 app.on('window-all-closed', () => {
 
@@ -70,9 +67,9 @@ app.on('ready', async () => {
     show: false,
     width: 1300,
     height: 700,
-    webPreferences:{
-      devTools:false
-    }
+    // webPreferences:{
+    //   devTools:false
+    // }
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
@@ -93,7 +90,7 @@ app.on('ready', async () => {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-  mainWindow.setMenu(null);
+  // mainWindow.setMenu(null);
 
   ipcMain.on('get-metadata',(event,path)=>{
         getStreams(path).then(data=>{
