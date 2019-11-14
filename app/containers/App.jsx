@@ -53,16 +53,7 @@ export class App extends Component {
            });
            console.log(data.fps);
            let _fps=Number(data.fps);
-           //hard coded, just to save time
-        //    if(_fps>60 && data.fps.length>3){
-        //        _fps=_fps/100;
-        //    }
-        //    else if(_fps>60 && data.fps.length>4){
-        //        _fps=_fps/1000;
-        //    }
-        //    else if(_fps>60 && data.fps.length>5){
-        //        _fps=_fps/10000;
-        //    }
+ 
           this.setState({
               _audio_streams:_parsedAudioStreams,
               ip_fps:data.fps,
@@ -195,9 +186,16 @@ export class App extends Component {
      })
    }
   handleInputVideoFile(file){
+      let _filename;
+      let _path=file.path;
+      if(_path.indexOf("\\")!=-1){
+          _filename = file.path.split("\\").slice(0, -1).join("\\")
+      }else{
+          _filename = file.path.split("/").slice(0, -1).join("/")
+      }
       this.setState({
           inputVideo:file,
-          outputFolder: file.path.split("/").slice(0,-1).join("/")
+          outputFolder: _filename
       });
       ipcRenderer.send('get-metadata',file.path);
   }
@@ -324,7 +322,7 @@ export class App extends Component {
                         onDropFile={this.handleOutputFolder.bind(this)}
                         type="folder"
                         defaultLabelText="No Output Folder Set"
-                         destination_folder_name={this.state.outputFolder}
+                        destination_folder_name={this.state.outputFolder}
                        />
                     </div>
                  </div>
@@ -458,9 +456,15 @@ class DropZone extends Component{
        
     }else if(this.props.type==="folder"){
         console.log("debug",type);
+        let _path=path
+        if(path.indexOf("\\")!=-1){
+            _path=path.split('\\').pop() + "/"
+        }else{
+            _path = path.split('/').pop() + "/"
+        }
         if(type.trim()===""){
             this.setState({
-                defaultLabelText: path.split('/').pop()+"/"
+                defaultLabelText: _path
             });
             this.props.onDropFile(file);
         }else{
@@ -482,7 +486,22 @@ class DropZone extends Component{
         console.log(files);
         this.propagateFile(files[0]);
      }
+    getTitle(destination_folder_name,defaultLabelText){
+        let fileTitle = defaultLabelText
+         if (destination_folder_name != null) {
+             let _path = destination_folder_name;
+             if ((_path.indexOf('\\') != -1)) {
+                 fileTitle = _path.split('\\').slice(-1) + "/"
+             } else {
+                 fileTitle = _path.split("/").slice(-1) + "/"
+             }
+         }
+         return fileTitle
+     }
     render(){
+
+        let fileTitle = this.getTitle(this.props.destination_folder_name,this.state.defaultLabelText);
+    
       return(
           <div className={`${styles.column} ${styles.drop_container_wrapper}`}
             onDragOver={ this.showDropOverlay.bind(this)}
@@ -513,14 +532,19 @@ class DropZone extends Component{
                     <div>{this.props.title}</div>
                 </div>)
                 :
-                (<div className={`${styles.drop_overlay}`}>
+                (<div className={`${styles.drop_overlay}`}
+                    onDragOver={ this.showDropOverlay.bind(this)}
+                    onDragStart={this.showDropOverlay.bind(this)}
+                    onDragLeave={this.hideDropOverlay.bind(this)}
+                    onDrop={this.onDrop.bind(this)}
+                >
                     <img src={require("./assets/download.png")} alt="drop icon"/>
                     <div>DROP HERE</div>
                 </div>)
                 }
                 <div className={styles.videoTitle}>
                     {
-                        this.props.destination_folder_name != null ? this.props.destination_folder_name.split('/').pop() + "/" : this.state.defaultLabelText
+                          fileTitle.replace("//","/")
                     }
                 </div>
             </div>
